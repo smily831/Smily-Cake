@@ -1,0 +1,44 @@
+from flask import *
+from doc1 import customers
+from doc3 import DataBaseHelper
+
+app = Flask("TheCakeLounge", template_folder="scl")
+db_helper = DataBaseHelper()
+
+
+@app.route("/")
+def index():
+    #return"Welcome To SCL App"
+    return render_template("index.html")
+
+
+@app.route("/add")
+def add():
+    # return"Welcome To SCL App"
+    return render_template("add-customer.html")
+
+
+@app.route("/view")
+def view():
+    # return"Welcome To SCL App"
+    return render_template("view-customers.html")
+
+
+@app.route("/save-customer", methods=["POST"])
+def save_customer_in_db():
+    cref = customers(name=request.form["name"],
+                     phone=request.form["phone"],
+                     quantity=request.form["quantity"],
+                     price=request.form["price"])
+    print(vars(cref))
+    sql = cref.insert_sql()
+    db_helper.write(sql)
+    return cref.name+" Inserted Successfully...."
+
+
+def main():
+    app.run()
+
+
+if __name__ == "__main__":
+    main()
